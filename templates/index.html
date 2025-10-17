@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Script Downloader</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; text-align: center; }
+    input { width: 60%; padding: 10px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; }
+    textarea { width: 90%; height: 400px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>🎬 YouTube Script Downloader</h1>
+  <p>유튜브 영상 URL을 입력하면 스크립트를 불러옵니다.</p>
+  <input id="url" placeholder="https://www.youtube.com/watch?v=...">
+  <button onclick="fetchTranscript()">가져오기</button>
+  <textarea id="result" readonly></textarea>
+  <script>
+    async function fetchTranscript() {
+      const url = document.getElementById("url").value;
+      document.getElementById("result").value = "불러오는 중...";
+      const res = await fetch("/api/transcript", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        document.getElementById("result").value = data.text;
+      } else {
+        document.getElementById("result").value = "오류: " + data.error;
+      }
+    }
+  </script>
+</body>
+</html>
